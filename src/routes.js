@@ -1,10 +1,12 @@
-const routes = require('express').Router()
+const route = require('express').Router()
 const pollController = require('./controllers/pollController')
 
-routes.get('/', (req, res) => res.send("Bem vindo a API."))
+route.get('/', (req, res) => res.send("Bem vindo a API do YourPoll!"))
 
-routes.get('/poll', (req, res) => res.send("Bem vindo a API."))
+route.get('/poll', (req, res) => pollController.getPolls(req, res))
 
-routes.post('/poll/register', (req, res) => pollController.addPoll(res, req.body))
+route.post('/poll/register', (req, res) => pollController.addPoll(res, req.body))
 
-module.exports = routes
+route.delete('/poll/delete/:id', (req, res) => pollController.removePoll(req.params, res))
+
+module.exports = route
