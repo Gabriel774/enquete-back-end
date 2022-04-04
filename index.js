@@ -1,18 +1,24 @@
-const express = require('express')
-const cors = require('cors')
+require('dotenv').config()
 
-const mongoose = require('mongoose');
-const routes = require('./src/routes')
+const express = require('express')
 const app = express()
+
+const cors = require('cors')
 app.use(cors({
     'Access-Control-Allow-Origin': '*'
 }))
 
+const mongoose = require('mongoose');
+
 const bp = require('body-parser')
 app.use(bp.json())
-app.use(bp.urlencoded({ extended: true }))
+app.use(bp.urlencoded({
+    extended: true
+}))
 
+const routes = require('./src/routes')
 app.use(routes)
+
 app.use(express.json())
 
 mongoose.connect('mongodb://localhost:27017/data').then(() => {
