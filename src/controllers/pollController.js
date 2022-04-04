@@ -17,6 +17,14 @@ const check = (res, name, options, start, end, color) => {
         msg: "A data do fim da enquete é obrigatória!"
     })
 
+    if (start > end) return res.status(422).json({
+        msg: "A data do inicio da enquete não pode ser posterior a data fim"
+    })
+
+    if (options.length < 3) return res.status(422).json({
+        msg: "A enquete não pode ter menos de três opções!"
+    })
+
     if (!color) return res.status(422).json({
         msg: "As cores do card da enquete são obrigatórias!"
     })

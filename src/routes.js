@@ -11,6 +11,6 @@ route.post('/poll/register', (req, res) => pollController.addPoll(req.body, res)
 
 route.delete('/poll/delete/:id', (req, res) => pollController.removePoll(req.params.id, res))
 
-route.patch('/edit', (req, res) => pollController.editPoll(req.body, res))
+route.patch('/poll/edit', (req, res) => pollController.editPoll(req.body, res))
 
 module.exports = route
