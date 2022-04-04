@@ -1,24 +1,6 @@
 const Poll = require('../models/Poll')
 
-const getPolls = async (res) => {
-    try {
-        const query = await Poll.find({})
-        res.status(200).json(query)
-    } catch (err) {
-        res.status(500).json({
-            msg: "Ocorreu um erro, tente novamente mais tarde."
-        })
-    }
-}
-
-const addPoll = async ({
-    name,
-    options,
-    start,
-    end,
-    color
-}, res) => {
-
+const check = (res, name, options, start, end, color) => {
     if (!name) return res.status(422).json({
         msg: "O título da enquete é obrigatório!"
     })
@@ -45,6 +27,41 @@ const addPoll = async ({
         msg: "A cor do texto do card da enquete é obrigatório!"
     })
 
+    return 'pass'
+}
+
+const getPolls = async (res) => {
+    try {
+        const query = await Poll.find({})
+        res.status(200).json(query)
+    } catch (err) {
+        res.status(500).json({
+            msg: "Ocorreu um erro, tente novamente mais tarde."
+        })
+    }
+}
+
+const getPoll = async (id, res) => {
+    try {
+        const query = await Poll.findById(id)
+        res.status(200).json(query)
+    } catch (error) {
+        res.status(500).json({
+            msg: "Erro, enquete não encontrada."
+        })
+    }
+}
+
+const addPoll = async ({
+    name,
+    options,
+    start,
+    end,
+    color
+}, res) => {
+
+    if (check(res, name, options, start, end, color) !== 'pass') return false
+
     const poll = new Poll({
         name,
         options,
@@ -66,9 +83,7 @@ const addPoll = async ({
     }
 }
 
-const removePoll = async ({
-    id
-}, res) => {
+const removePoll = async (id, res) => {
     if (!id) return res.status(422).json({
         msg: "O id da enquete a ser excluída é obrigatório"
     })
@@ -108,31 +123,7 @@ const editPoll = async ({
         msg: "O ID da enquete é obrigatório!"
     })
 
-    if (!name) return res.status(422).json({
-        msg: "O título da enquete é obrigatório!"
-    })
-
-    if (!options) return res.status(422).json({
-        msg: "As opções da enquete são obrigatórias!"
-    })
-
-    if (!start) return res.status(422).json({
-        msg: "A data de início da enquete é obrigatória!"
-    })
-
-    if (!end) return res.status(422).json({
-        msg: "A data do fim da enquete é obrigatória!"
-    })
-
-    if (!color) return res.status(422).json({
-        msg: "As cores do card da enquete são obrigatórias!"
-    })
-    if (!color.background) return res.status(422).json({
-        msg: "A cor de fundo do card da enquete é obrigatório!"
-    })
-    if (!color.text) return res.status(422).json({
-        msg: "A cor do texto do card da enquete é obrigatório!"
-    })
+    if (check(res, name, options, start, end, color) !== 'pass') return false
 
     const search = await Poll.findById(_id)
     if (search === null) return res.status(404).json({
@@ -163,8 +154,9 @@ const editPoll = async ({
 }
 
 module.exports = {
-    addPoll,
     getPolls,
+    getPoll,
+    addPoll,
     removePoll,
     editPoll
 }

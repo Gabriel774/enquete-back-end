@@ -21,7 +21,12 @@ app.use(routes)
 
 app.use(express.json())
 
-mongoose.connect('mongodb://localhost:27017/data').then(() => {
-    app.listen(3333)
+const user = process.env.DB_USER
+const password = process.env.DB_PASSWORD
+
+mongoose.connect(
+    `mongodb+srv://${user}:${password}@yourpoll.kk0ks.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
+).then(() => {
+    app.listen(process.env.PORT || 5000)
     console.log('aplicação conectada ao banco de dados')
 }).catch((err) => console.log(err))
